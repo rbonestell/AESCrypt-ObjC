@@ -36,15 +36,23 @@
 @implementation AESCrypt
 
 + (NSString *)encrypt:(NSString *)message password:(NSString *)password {
-  NSData *encryptedData = [[message dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptedDataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
-  NSString *base64EncodedString = [NSString base64StringFromData:encryptedData length:[encryptedData length]];
-  return base64EncodedString;
+    if ((!message) || [message isEqualToString:@""])
+        return @"";
+    if ((!key) || [key isEqualToString:@""])
+        return nil;
+    NSData *encryptedData = [[message dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptedDataUsingKey:[[key dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
+    NSString *base64EncodedString = [NSString base64StringFromData:encryptedData length:[encryptedData length]];
+    return base64EncodedString;
 }
 
 + (NSString *)decrypt:(NSString *)base64EncodedString password:(NSString *)password {
-  NSData *encryptedData = [NSData base64DataFromString:base64EncodedString];
-  NSData *decryptedData = [encryptedData decryptedAES256DataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
-  return [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
+    if ((!base64EncodedString) || [base64EncodedString isEqualToString:@""])
+        return @"";
+    if ((!password) || [password isEqualToString:@""])
+        return nil;
+    NSData *encryptedData = [NSData base64DataFromString:base64EncodedString];
+    NSData *decryptedData = [encryptedData decryptedAES256DataUsingKey:[[password dataUsingEncoding:NSUTF8StringEncoding] SHA256Hash] error:nil];
+    return [[NSString alloc] initWithData:decryptedData encoding:NSUTF8StringEncoding];
 }
 
 @end
